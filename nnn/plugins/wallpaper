@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if file $1 | grep 'image' > /dev/null
+then
+	feh --bg-fill $1 > /dev/null
+else
+	echo "Not an image file"
+fi
