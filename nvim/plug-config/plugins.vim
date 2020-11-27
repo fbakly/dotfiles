@@ -18,7 +18,6 @@ Plug 'puremourning/vimspector'
 
 " Python Plugins
 Plug 'Vimjas/vim-python-pep8-indent'
-Plug 'tell-k/vim-autopep8'
 
 " Pydocstring plugins
 Plug 'heavenshell/vim-pydocstring', { 'do': 'make install' }
@@ -35,9 +34,6 @@ Plug 'voldikss/vim-floaterm'
 " Fuzzy finder
 Plug 'junegunn/fzf.vim'
 
-" VimWiki
-Plug 'vimwiki/vimwiki'
-
 " Colorschemes
 Plug 'morhetz/gruvbox'
 Plug 'wadackel/vim-dogrun'
@@ -46,11 +42,8 @@ Plug 'ayu-theme/ayu-vim'
 
 call plug#end()
 
-" Autopep8 on save
-let g:autopep8_on_save=1
-let g_autopep8_ignore="E114,E115,E116"
-" Autopep8 disable diff
-let g:autopep8_disable_show_diff=1
+" Unmap pydocstring from <C-l>
+nmap <silent> <C-_> <Plug>(pydocstring)
 
 " Vimspector Keymaps
 let g:vimspector_enable_mappings = 'HUMAN'
