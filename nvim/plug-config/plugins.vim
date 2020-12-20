@@ -16,6 +16,10 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Debugger
 Plug 'puremourning/vimspector'
 
+" Autopair
+Plug 'jiangmiao/auto-pairs'
+
+
 " Python Plugins
 Plug 'Vimjas/vim-python-pep8-indent'
 
@@ -24,7 +28,6 @@ Plug 'heavenshell/vim-pydocstring', { 'do': 'make install' }
 
 " Tools to make life easier
 Plug 'preservim/nerdcommenter'
-Plug 'jiangmiao/auto-pairs'
 Plug 'lilydjwg/colorizer'
 
 " File Manager and floating window
@@ -37,13 +40,10 @@ Plug 'junegunn/fzf.vim'
 " Colorschemes
 Plug 'morhetz/gruvbox'
 Plug 'wadackel/vim-dogrun'
-Plug 'challenger-deep-theme/vim', { 'as': 'challenger-deep' }
-Plug 'ayu-theme/ayu-vim'
+Plug 'ajh17/Spacegray.vim'
+Plug 'ghifarit53/tokyonight-vim'
 
 call plug#end()
-
-" Unmap pydocstring from <C-l>
-nmap <silent> <C-_> <Plug>(pydocstring)
 
 " Vimspector Keymaps
 let g:vimspector_enable_mappings = 'HUMAN'
@@ -52,10 +52,20 @@ let g:vimspector_enable_mappings = 'HUMAN'
 "let g:gruvbox_italic=1
 "let g:gruvbox_contrast_dark='hard'
 "colorscheme gruvbox
+
 "colorscheme dogrun
+
 "colorscheme challenger_deep
-let ayucolor="mirage"
-colorscheme ayu
+
+"let ayucolor="dark"
+"colorscheme ayu
+
+"let g:spacegray_use_italics=1
+"colorscheme spacegray
+
+let g:tokyonight_style = 'night' " available: night, storm
+let g:tokyonight_enable_italic = 1
+colorscheme tokyonight
 
 "hi Normal guibg=NONE ctermbg=NONE
 
@@ -64,7 +74,7 @@ if executable('Rg')
 endif
 
 let g:lightline = {
-			\ 'colorscheme': 'ayu_dark',
+			\ 'colorscheme': 'tokyonight',
 			\ 'active': {
 			\ 'left': [ [ 'mode', 'paste' ], [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
 			\},
@@ -86,6 +96,10 @@ autocmd FileType ms :setlocal spell spelllang=en_us
 autocmd FileType ms map <silent> <F5> :!groff -ms % -Tpdf > %:r.pdf
 
 autocmd FileType cpp map <F1> :!g++ -Wall -O2 % -o %:r<CR>
-autocmd FileType cpp map <F2> :!%:r<CR>
+autocmd FileType cpp map <F2> :!./%:r<CR>
 
 autocmd FileType go map <F1> :!go run %<CR>
+autocmd FileType go map <F2> :!go run %
+
+autocmd FileType python map <F1> :!python %<CR>
+autocmd FileType python map <F2> :!python %

@@ -46,3 +46,9 @@ inoremap jk <Esc>
 
 " Vimspector
 nnoremap <leader>dd :call vimspector#Launch()<CR>
+
+" Unmap pydocstring from <C-l>
+nmap <silent> <C-_> <Plug>(pydocstring)
+
+map <C-c> <plug>NERDCommenterInvert
+
