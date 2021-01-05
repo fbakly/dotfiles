@@ -1,7 +1,7 @@
 //Modify this file to change what commands output to your statusbar, and recompile using the make command.
 static const Block blocks[] = {
 	/*Icon*/	/*Command*/		/*Update Interval*/	/*Update Signal*/
-	{"  ", 	"sudo pacman -Sy | pacman -Qu | wc -l", 			60, 	0},
+	{"  ", 	"pacman -Qu | wc -l", 			3600, 	0},
 
 	{"MEMORY ", "free -m | awk \'/Mem/ \{print $3\"/\"$2 \" MB\"\}\'", 	1, 	0},
 

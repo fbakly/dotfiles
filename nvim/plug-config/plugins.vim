@@ -2,6 +2,8 @@ call plug#begin('~/.local/share/nvim/plugged')
 
 " Git
 Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
+set updatetime=100 " set update time for gitgutter update
 
 " Saves previous edits in file
 Plug 'mbbill/undotree'
@@ -13,12 +15,8 @@ Plug 'ryanoasis/vim-devicons'
 " Intellisense
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-" Debugger
-Plug 'puremourning/vimspector'
-
 " Autopair
 Plug 'jiangmiao/auto-pairs'
-
 
 " Python Plugins
 Plug 'Vimjas/vim-python-pep8-indent'
@@ -34,8 +32,15 @@ Plug 'lilydjwg/colorizer'
 Plug 'mcchrish/nnn.vim'
 Plug 'voldikss/vim-floaterm'
 
+" Improved motion
+Plug 'psliwka/vim-smoothie'
+Plug 'easymotion/vim-easymotion'
+
 " Fuzzy finder
 Plug 'junegunn/fzf.vim'
+
+" Change surrounding barckets, quotes, etc...
+Plug 'tpope/vim-surround'
 
 " Colorschemes
 Plug 'morhetz/gruvbox'
@@ -44,10 +49,6 @@ Plug 'ajh17/Spacegray.vim'
 Plug 'ghifarit53/tokyonight-vim'
 
 call plug#end()
-
-" Vimspector Keymaps
-let g:vimspector_enable_mappings = 'HUMAN'
-"packadd! vimspector
 
 "let g:gruvbox_italic=1
 "let g:gruvbox_contrast_dark='hard'
@@ -66,8 +67,6 @@ let g:vimspector_enable_mappings = 'HUMAN'
 let g:tokyonight_style = 'night' " available: night, storm
 let g:tokyonight_enable_italic = 1
 colorscheme tokyonight
-
-"hi Normal guibg=NONE ctermbg=NONE
 
 if executable('Rg')
     let g:rg_derive_root='true'
