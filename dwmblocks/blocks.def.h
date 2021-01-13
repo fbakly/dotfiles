@@ -13,10 +13,10 @@ static const Block blocks[] = {
 
 	{"墳 ", 	"pamixer --get-volume", 0, 	10},
 
-	{" ", 	"date +\"%H:%M   %d-%m-%Y\"", 		30, 	0},
+	{" ", 	"date +\"%H:%M  %d-%m-%Y\"", 		30, 	0},
 
 };
 
 //sets delimeter between status commands. NULL character ('\0') means no delimeter.
-static char delim[] = "  ";
-static unsigned int delimLen = 2;
+static char delim[] = " | ";
+static unsigned int delimLen = 5;
