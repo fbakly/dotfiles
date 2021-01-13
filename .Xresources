@@ -1,30 +1,52 @@
-*background: #0A0E14
-*foreground: #b3b1ad
-*color0: #01060E
-*color1: #EA6C73
-*color2: #91B362
-*color3: #F9AF4F
-*color4: #53BDFA
-*color5: #FAE994
-*color6: #90E1C6
-*color7: #C7C7C7
-*color8: #686868
-*color9: #F07178
-*color10: #C2D94C
-*color11: #FFB454
-*color12: #59C2FF
-*color13: #FFEE99
-*color14: #95E6CB
-*color15: #FFFFFF
+#define borderColor #000000
+#define cursorColor #a9b1d6
+#define color0 #2E3440
+#define color1 #3B4252
+#define color2 #434C5E
+#define color3 #4C566A
+#define color4 #D8DEE9
+#define color5 #E5E9F0
+#define color6 #ECEFF4
+#define color7 #8FBCBB
+#define color8 #88C0D0
+#define color9 #81A1C1
+#define color10 #5E81AC
+#define color11 #BF616A
+#define color12 #D08770
+#define color13 #EBCB8B
+#define color14 #A3BE8C
+#define color15 #B48EAD
 
-dwm.normbordercolor: #000000
-dwm.normbgcolor: #0a0e14
-dwm.normfgcolor: #cbccc6
-dwm.selbordercolor: #f9af4f
-dwm.selbgcolor: #0a0e14
-dwm.selfgcolor: #f9af4f
 
-dmenu.background: #0a0e14
-dmenu.foreground: #cbccc6
-dmenu.selbackground: #0a0e14
-dmenu.selforeground: #f9af4f
+*borderColor: borderColor
+*cursorColor: cursorColor
+*background: color0
+*foreground: color4
+*color0: color0
+*color1: color1
+*color2: color2
+*color3: color3
+*color4: color4
+*color5: color5
+*color6: color6
+*color7: color7
+*color8: color8
+*color9: color9
+*color10: color10
+*color11: color11
+*color12: color12
+*color13: color13
+*color14: color14
+*color15: color15
+
+dwm.normbordercolor: borderColor
+dwm.normbgcolor: color0
+dwm.normfgcolor: color4
+dwm.selbordercolor: color8
+dwm.selbgcolor: color0
+dwm.selfgcolor: color8
+
+dmenu.background: color0
+dmenu.foreground: color4
+dmenu.selbackground: color0
+dmenu.selforeground: color8
