@@ -28,6 +28,7 @@ set mouse=a 											" Enable mouse
 set hidden
 set formatoptions-=cro
 set termguicolors
+set scrolloff=5
 
 highlight ColorColumn ctermbg=0 guibg=lightgrey
 
