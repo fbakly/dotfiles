@@ -57,3 +57,5 @@ nnoremap <silent> <leader>rn    <cmd>lua vim.lsp.buf.rename()<CR>
 " LSP Autocomplete
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+nnoremap <C-n> :NvimTreeToggle<CR>

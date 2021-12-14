@@ -29,6 +29,8 @@ set hidden
 set formatoptions-=cro
 set termguicolors
 set scrolloff=5
+set completeopt=menu,menuone,noselect
+set updatetime=100 " set update time for gitgutter update
 
 highlight ColorColumn ctermbg=0 guibg=lightgrey
 
