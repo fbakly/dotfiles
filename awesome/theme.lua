@@ -13,19 +13,22 @@ local theme = {}
 
 theme.font          = "FiraCode Nerd Font 9"
 
-theme.bg_normal     = "#2E3440"
-theme.bg_focus      = "#88C0D0"
+--theme.bg_normal     = "#2E3440"
+theme.bg_normal     = "#1B1618"
+--theme.bg_focus      = "#CC97EA"
+theme.bg_focus      = "#a7c080"
 theme.bg_urgent     = "#BF616A"
 theme.bg_minimize   = "#444444"
 theme.bg_systray    = theme.bg_normal
 
 theme.fg_normal     = "#D8DEE9"
 theme.fg_focus      = "#2E3440"
+--theme.fg_focus      = "#d3c6aa"
 theme.fg_urgent     = "#2E3440"
 theme.fg_minimize   = "#ffffff"
 
 theme.useless_gap   = dpi(0)
-theme.border_width  = dpi(2)
+theme.border_width  = dpi(4)
 theme.border_normal = "#000000"
 theme.border_focus  = theme.bg_focus
 theme.border_marked = "#91231c"

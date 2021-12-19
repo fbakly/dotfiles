@@ -65,7 +65,7 @@ super = "Mod4"
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = {
     awful.layout.suit.tile,
-    --awful.layout.suit.floating,
+	awful.layout.suit.floating,
     --awful.layout.suit.tile.left,
     --awful.layout.suit.tile.bottom,
     --awful.layout.suit.tile.top,
@@ -332,6 +332,7 @@ awful.screen.connect_for_each_screen(function(s)
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
             --mylauncher,
+            s.mylayoutbox,
             s.mytaglist,
             s.mypromptbox,
 			sep,
@@ -355,8 +356,8 @@ awful.screen.connect_for_each_screen(function(s)
 			sep,
             mytextclock,
 			tray
-            --s.mylayoutbox,
         },
+		opacity = 0.8,
     }
 end)
 -- }}}
@@ -460,10 +461,12 @@ globalkeys = gears.table.join(
               end,
               {description = "restore minimized", group = "client"}),
 
-	awful.key({ super, }, "p", function () awful.spawn("passmenu") end,
+	awful.key({ modkey, "Shift" }, "p", function () awful.spawn("passmenu") end,
 			{description = "password manager", group = "other"}),
 	awful.key({ super, }, "b", function () awful.spawn("firefox") end,
 			{description = "Browser", group = "GUI Apps"}),
+	awful.key({ super, }, "e", function () awful.spawn("pcmanfm") end,
+			{description = "File Explorer", group = "GUI Apps"}),
 	awful.key({ }, "Print", function () awful.spawn.with_shell("/home/fbakly/scripts/screenshot") end,
 			{description = "Screenshot Copy", group = "Scripts"}),
 	awful.key({ "Shift" }, "Print", function () awful.spawn.with_shell("/home/fbakly/scripts/screenshot 1") end,
@@ -480,7 +483,7 @@ globalkeys = gears.table.join(
 		update_vol()
 	end,
 			{description = "Decrease Volume", group = "Multimedia"}),
-	awful.key({ }, "XF86AudioLowerVolume", function () awful.spawn.with_shell("pamixer -t") end,
+	awful.key({ }, "XF86AudioMute", function () awful.spawn.with_shell("pamixer -t") end,
 			{description = "Toggle Mute", group = "Multimedia"}),
 
 
@@ -750,9 +753,13 @@ update_tray()
 update_time()
 -- Autostart Applications
 awful.spawn.with_shell("/home/fbakly/.fehbg &")
-awful.spawn.with_shell("picom &")
-awful.spawn.with_shell("nm-applet &")
-awful.spawn.with_shell("redshift -l 52.21833:6.89583 &")
-awful.spawn.with_shell("cbatticon &")
+awful.spawn.with_shell("pidof picom  > /dev/null || picom &")
+awful.spawn.with_shell("pidof nm-applet > /dev/null || nm-applet &")
+awful.spawn.with_shell("pidof redshift > /dev/null || redshift -l 52.21833:6.89583 &")
+awful.spawn.with_shell("pidof cbatticon > /dev/null || cbatticon &")
+awful.spawn.with_shell("killall pipewire & killall pipewire-pulse & killall wireplumber")
+awful.spawn.with_shell("pipewire & pipewire-pulse & wireplumber")
+awful.spawn.with_shell("pidof mpris-proxy || mpris-proxy &")
+awful.spawn.with_shell("pidof pasystray > /dev/null || pasystray &")
 -- Comes with built in notification manager
 --awful.spawn.with_shell("dunst &")
