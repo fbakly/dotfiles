@@ -9,7 +9,8 @@ autocmd FileType tex :syntax spell toplevel
 "autocmd FileType tex :set lbr
 
 autocmd FileType markdown :setlocal spell spelllang=en_us
-autocmd FileType markdown map <silent> <F5> :!pandoc -f markdown % -Tpdf -C -o %:r.pdf<CR>
+" autocmd FileType markdown map <silent> <F5> :!pandoc -f markdown % -Tpdf -C -o %:r.pdf<CR>
+autocmd FileType markdown map <silent> <F5> :Glow<CR>
 autocmd BufWritePre *.cpp,*.hpp,*.c,*.h lua vim.lsp.buf.formatting_sync()
 
 autocmd FileType rmd :setlocal spell spelllang=en_us

@@ -11,13 +11,19 @@ Plug 'mbbill/undotree'
 Plug 'hoob3rt/lualine.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
 
-" LSP and Completion
+Plug 'lukas-reineke/indent-blankline.nvim'
+
+" LSP, Completion and Debugger
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'L3MON4D3/LuaSnip'
 Plug 'saadparwaiz1/cmp_luasnip'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'mfussenegger/nvim-dap'
+Plug 'mfussenegger/nvim-dap-python'
+Plug 'rcarriga/nvim-dap-ui'
 
 " Autopair
 Plug 'windwp/nvim-autopairs'
@@ -27,7 +33,7 @@ Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'heavenshell/vim-pydocstring', { 'do': 'make install' }
 
 " Tools to make life easier
-Plug 'preservim/nerdcommenter'
+Plug 'numToStr/Comment.nvim'
 Plug 'lilydjwg/colorizer'
 
 " File Manager and floating window
@@ -52,6 +58,12 @@ Plug 'tpope/vim-surround'
 Plug 'akinsho/toggleterm.nvim'
 Plug 'kyazdani42/nvim-tree.lua'
 
+Plug 'folke/trouble.nvim'
+Plug 'folke/todo-comments.nvim'
+
+Plug 'mechatroner/rainbow_csv'
+Plug 'ellisonleao/glow.nvim'
+
 " Colorschemes
 Plug 'morhetz/gruvbox'
 Plug 'ghifarit53/tokyonight-vim'
@@ -61,9 +73,9 @@ Plug 'sainnhe/everforest'
 
 call plug#end()
 
-"let g:gruvbox_italic=1
-"let g:gruvbox_contrast_dark='hard'
-"colorscheme gruvbox
+let g:gruvbox_italic=1
+let g:gruvbox_contrast_dark='hard'
+colorscheme gruvbox
 
 "let g:tokyonight_style = 'night' " available: night, storm
 "let g:tokyonight_enable_italic = 1
@@ -73,12 +85,15 @@ call plug#end()
 
 "colorscheme dogrun
 
-colorscheme everforest
+" colorscheme everforest
 
 "if exists('+termguicolors')
         "let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
         "let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 "endif
+
+" let g:pydocstring_doq_path='$HOME/AppData/Local/Programs/Python/Python38/Scripts/doq.exe'
+let g:pydocstring_formatter='sphinx'
 
 if executable('Rg')
     let g:rg_derive_root='true'
