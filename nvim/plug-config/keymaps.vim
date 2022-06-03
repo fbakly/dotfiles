@@ -19,7 +19,7 @@ nnoremap <C-b>		<cmd>Telescope buffers<cr>
 " Buffer movement
 nnoremap <leader>bn :bn<CR>
 nnoremap <leader>bp :bp<CR>
-nnoremap <leader>bd :enew<bar>bd #<CR>
+nnoremap <leader>bd :bd<CR>
 
 " Tabs
 nnoremap <leader>to :tabnew<CR>
@@ -41,6 +41,8 @@ inoremap jk <Esc>
 " Unmap pydocstring from <C-l>
 nmap <silent> <leader>pd <Plug>(pydocstring)
 
+nnoremap <leader>wk :WhichKey<CR>
+
 " LSP
 nnoremap <silent> gd 			<cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> K     		<cmd>lua vim.lsp.buf.hover()<CR>
@@ -60,7 +62,7 @@ nnoremap <silent> <F10> <Cmd>lua require'dap'.step_over()<CR>
 nnoremap <silent> <F11> <Cmd>lua require'dap'.step_into()<CR>
 nnoremap <silent> <F12> <Cmd>lua require'dap'.step_out()<CR>
 nnoremap <silent> <Leader>dq <Cmd>lua require"dap".terminate()<CR>
-nnoremap <silent> <Leader>b <Cmd>lua require'dap'.toggle_breakpoint()<CR>
+nnoremap <silent> <Leader>bb <Cmd>lua require'dap'.toggle_breakpoint()<CR>
 nnoremap <silent> <Leader>B <Cmd>lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>
 nnoremap <silent> <Leader>lp <Cmd>lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>
 nnoremap <silent> <Leader>dr <Cmd>lua require'dap'.repl.open()<CR>

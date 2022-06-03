@@ -2,7 +2,7 @@ lua << EOF
 
 require('lualine').setup{
 	options = {
-		theme = 'everforest',
+		theme = 'gruvbox',
 		section_separators = {'', ''},
 		component_separators = {'', ''}
 	}
@@ -28,6 +28,8 @@ require('toggleterm').setup{
 	open_mapping = [[<c-\>]],
 	shade_terminal = false
 }
+
+require("which-key").setup{}
 
 require'nvim-treesitter.configs'.setup {
   highlight = {
@@ -129,21 +131,32 @@ require'lspconfig'.pyright.setup{
 require'lspconfig'.clangd.setup{
 	capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 }
+require'lspconfig'.gopls.setup{
+	capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+}
 require'lspconfig'.texlab.setup{
 	capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 }
+require'lspconfig'.rust_analyzer.setup({
+	on_attach=on_attach,
+    settings = {
+        ["rust-analyzer"] = {
+            assist = {
+                importGranularity = "module",
+                importPrefix = "self",
+            },
+            cargo = {
+                loadOutDirsFromCheck = true
+            },
+            procMacro = {
+                enable = true
+            },
+        }
+    },
+	capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+})
 
 local dap, dapui = require("dap"), require("dapui")
-
-require('dap-python').setup('~/projects/debugpy/Scripts/python.exe')
-table.insert(require('dap').configurations.python, {
-  type = 'python',
-  request = 'launch',
-  name = 'My custom launch configuration',
-  program = '${file}',
-  justMyCode = false,
-  -- ... more options, see https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings
-})
 
 dapui.setup()
 
@@ -156,6 +169,20 @@ end
 dap.listeners.before.event_exited["dapui_config"] = function()
   dapui.close()
 end
+
+require('dap-python').setup('~/venvs/debugpy/bin/python')
+-- table.insert(require('dap').configurations.python, {
+--   type = 'python',
+--   request = 'launch',
+--   name = 'My custom launch configuration',
+--   program = '${file}',
+--   justMyCode = false,
+--   -- ... more options, see https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings
+-- })
+
+require("nvim-dap-virtual-text").setup()
+
+require('telescope').load_extension('dap')
 
 vim.fn.sign_define('DapBreakpoint', {text='🟥', texthl='', linehl='', numhl=''})
 vim.fn.sign_define('DapBreakpointRejected', {text='🟦', texthl='', linehl='', numhl=''})

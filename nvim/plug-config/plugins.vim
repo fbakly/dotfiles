@@ -21,9 +21,15 @@ Plug 'hrsh7th/nvim-cmp'
 Plug 'L3MON4D3/LuaSnip'
 Plug 'saadparwaiz1/cmp_luasnip'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
 Plug 'mfussenegger/nvim-dap'
-Plug 'mfussenegger/nvim-dap-python'
 Plug 'rcarriga/nvim-dap-ui'
+Plug 'nvim-telescope/telescope-dap.nvim'
+Plug 'theHamsta/nvim-dap-virtual-text'
+Plug 'mfussenegger/nvim-dap-python'
+
+" Never forget a keybinding
+Plug 'folke/which-key.nvim'
 
 " Autopair
 Plug 'windwp/nvim-autopairs'
@@ -70,8 +76,12 @@ Plug 'ghifarit53/tokyonight-vim'
 Plug 'arcticicestudio/nord-vim'
 Plug 'wadackel/vim-dogrun'
 Plug 'sainnhe/everforest'
+Plug 'marko-cerovac/material.nvim'
 
 call plug#end()
+
+" let g:material_style = "oceanic"
+" colorscheme material
 
 let g:gruvbox_italic=1
 let g:gruvbox_contrast_dark='hard'
@@ -85,6 +95,8 @@ colorscheme gruvbox
 
 "colorscheme dogrun
 
+" let g:everforest_background = 'hard'
+" let g:everforest_better_performance = 1
 " colorscheme everforest
 
 "if exists('+termguicolors')

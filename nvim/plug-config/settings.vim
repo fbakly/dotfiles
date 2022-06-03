@@ -15,7 +15,7 @@ set nobackup                                            " Disable unwanted backu
 set undodir=~/.config/nvim/undodir                      " Needed by undotree
 set undofile                                            " Needed by undotree
 set incsearch                                           " Search while typing the string
-set laststatus=2                                        " Always show status line
+set laststatus=3                                        " Always show status line
 set colorcolumn=80                                      " Set column at char 80
 set ruler                                               " Always show cursor position
 set cursorline                                          " Highlight line cursor is on
@@ -32,8 +32,10 @@ set scrolloff=5
 set completeopt=menu,menuone,noselect
 set updatetime=100 " set update time for gitgutter update
 set fileformats=unix,dos
+set winbar=%m\ %f
 
 highlight ColorColumn ctermbg=0 guibg=lightgrey
+highlight WinSeparator guibg=None
 
 filetype plugin on 										" Reqired by VimWiki on by default on neovim
 
