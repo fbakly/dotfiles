@@ -33,6 +33,10 @@ set completeopt=menu,menuone,noselect
 set updatetime=100 " set update time for gitgutter update
 set fileformats=unix,dos
 set winbar=%m\ %f
+set foldmethod=expr
+set foldexpr=nvim_treesitter#foldexpr()
+set nofoldenable
+set foldlevel=99
 
 highlight ColorColumn ctermbg=0 guibg=lightgrey
 highlight WinSeparator guibg=None
