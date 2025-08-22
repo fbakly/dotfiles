@@ -28,18 +28,6 @@ vim.keymap.set("n", "<C-l>", "<cmd>vertical resize -5<CR>")
 vim.keymap.set("n", "<C-j>", "<cmd>resize -2<CR>")
 vim.keymap.set("n", "<M-j>", "<cmd>resize +2<CR>")
 
-vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", { silent = true })
-vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", { silent = true })
-vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.implementation()<CR>", { silent = true })
-vim.keymap.set("n", "<c-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", { silent = true })
-vim.keymap.set("n", "1gD", "<cmd>lua vim.lsp.buf.type_definition()<CR>", { silent = true })
-vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", { silent = true })
-vim.keymap.set("n", "g0", "<cmd>lua vim.lsp.buf.document_symbol()<CR>", { silent = true })
-vim.keymap.set("n", "gW", "<cmd>lua vim.lsp.buf.workspace_symbol()<CR>", { silent = true })
--- vim.keymap.set("n", "<c-]>", "<cmd>lua vim.lsp.buf.declaration()<CR>", {silent=true})
-vim.keymap.set("n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<CR>", { silent = true })
-vim.keymap.set("i", "<c-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", { silent = true })
-
 -- place this in one of your configuration file(s)
 local hop = require('hop')
 local directions = require('hop.hint').HintDirection

@@ -1,4 +1,5 @@
 require("config.opt_settings")
 require("config.lazy")
 require("config.keymaps")
+require("config.lsp")
 vim.cmd("colorscheme ayu")
