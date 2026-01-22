@@ -3,9 +3,9 @@ return {
   version = "*",
   config = function()
     require("toggleterm").setup({
-      open_mapping = [[<c-\>]],
+      open_mapping = [[<C-M-\>]],
       shade_terminal = false,
-      direction = "horizontal"
+      direction = "float"
     })
   end
 }

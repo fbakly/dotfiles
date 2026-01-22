@@ -1,21 +1,21 @@
 return {
   "mfussenegger/nvim-dap",
   dependencies = {
-    "rcarriga/nvim-dap-ui",
+    "igorlfs/nvim-dap-view",
+    -- "rcarriga/nvim-dap-ui",
     "theHamsta/nvim-dap-virtual-text",
     "nvim-neotest/nvim-nio",
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     "mfussenegger/nvim-dap-python",
+    'Weissle/persistent-breakpoints.nvim',
   },
   config = function()
     local dap = require "dap"
-    local ui = require "dapui"
     require('dap-python').setup('python')
     require("dap-python").test_runner = "pytest"
 
     vim.keymap.set({ "n", "v" }, "<Leader>dt", function() require("dap-python").test_method() end)
 
-    require("dapui").setup()
     vim.fn.sign_define('DapBreakpoint', { text = '🟥', texthl = '', linehl = '', numhl = '' })
     vim.fn.sign_define('DapBreakpointRejected', { text = '🟦', texthl = '', linehl = '', numhl = '' })
     vim.fn.sign_define('DapStopped', { text = '⭐️', texthl = '', linehl = '', numhl = '' })
@@ -39,32 +39,70 @@ return {
       end,
     }
 
-    vim.keymap.set("n", "<space>bb", dap.toggle_breakpoint)
-    vim.keymap.set("n", "<space>gb", dap.run_to_cursor)
+    local persistent_breakpoints = require("persistent-breakpoints")
+    local persistent_breakpoints_api = require("persistent-breakpoints.api")
+    persistent_breakpoints.setup {
+      load_breakpoints_event = { "BufReadPost" }
+    }
 
-    -- Eval var under cursor
-    vim.keymap.set("n", "<space>?", function()
-      require("dapui").eval(nil, { enter = true })
-    end)
+    vim.keymap.set("n", "<space>bb", persistent_breakpoints_api.toggle_breakpoint)
+    vim.keymap.set("n", "<space>bc", persistent_breakpoints_api.set_conditional_breakpoint)
+    vim.keymap.set("n", "<space>bg", dap.run_to_cursor)
 
-    vim.keymap.set("n", "<F1>", dap.continue)
-    vim.keymap.set("n", "<F2>", dap.step_into)
-    vim.keymap.set("n", "<F3>", dap.step_over)
-    vim.keymap.set("n", "<F4>", dap.step_out)
-    vim.keymap.set("n", "<F5>", dap.step_back)
-    vim.keymap.set("n", "<F13>", dap.restart)
 
-    dap.listeners.before.attach.dapui_config = function()
-      ui.open()
+    vim.keymap.set('n', '<F5>', dap.continue)
+    vim.keymap.set('n', '<S-F5>', dap.terminate)
+    vim.keymap.set('n', '<C-S-F5>', dap.restart)
+    vim.keymap.set('n', '<F10>', dap.step_over)
+    vim.keymap.set('n', '<F11>', dap.step_into)
+    vim.keymap.set('n', '<F12>', dap.step_out)
+
+    local dv = require("dap-view")
+    local dv_opts = {
+      winbar = {
+        controls = {
+          enabled = true
+        }
+      }
+    }
+
+    dv.setup(dv_opts)
+
+    dap.listeners.before.attach["dap-view-config"] = function()
+      dv.open()
     end
-    dap.listeners.before.launch.dapui_config = function()
-      ui.open()
+    dap.listeners.before.launch["dap-view-config"] = function()
+      dv.open()
     end
-    dap.listeners.before.event_terminated.dapui_config = function()
-      ui.close()
+    dap.listeners.before.event_terminated["dap-view-config"] = function()
+      dv.close()
     end
-    dap.listeners.before.event_exited.dapui_config = function()
-      ui.close()
+    dap.listeners.before.event_exited["dap-view-config"] = function()
+      dv.close()
     end
+    vim.keymap.set('n', '<leader>dt', dv.toggle)
+
+
+    -- local ui = require "dapui"
+    -- require("dapui").setup()
+    -- -- Eval var under cursor
+    -- vim.keymap.set("n", "<space>?", function()
+    --   require("dapui").eval(nil, { enter = true })
+    -- end)
+
+    -- vim.keymap.set('n', '<leader>dt', ui.toggle)
+
+    -- dap.listeners.before.attach.dapui_config = function()
+    --   ui.open()
+    -- end
+    -- dap.listeners.before.launch.dapui_config = function()
+    --   ui.open()
+    -- end
+    -- dap.listeners.before.event_terminated.dapui_config = function()
+    --   ui.close()
+    -- end
+    -- dap.listeners.before.event_exited.dapui_config = function()
+    --   ui.close()
+    -- end
   end,
 }

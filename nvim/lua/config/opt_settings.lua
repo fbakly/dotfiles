@@ -38,3 +38,39 @@ vim.o.swapfile = false
 vim.o.backup = false
 vim.o.colorcolumn = "80,120"
 -- vim.o.formatoptions-=cro
+
+vim.o.tabline = '%!v:lua.MyTabLine()'
+
+function _G.MyTabLine()
+  local s = ''
+  for i = 1, vim.fn.tabpagenr('$') do
+    -- Select highlighting
+    if i == vim.fn.tabpagenr() then
+      s = s .. '%#TabLineSel#'
+    else
+      s = s .. '%#TabLine#'
+    end
+
+    -- Set the tab page number
+    s = s .. '%' .. i .. 'T'
+
+    -- Get buffer name and make it relative to cwd
+    local buflist = vim.fn.tabpagebuflist(i)
+    local winnr = vim.fn.tabpagewinnr(i)
+    local bufnr = buflist[winnr]
+    local bufname = vim.fn.bufname(bufnr)
+    local filename = vim.fn.fnamemodify(bufname, ':~:.')
+
+    if filename == '' then
+      filename = '[No Name]'
+    end
+
+    -- Add modified flag
+    local modified = vim.fn.getbufvar(bufnr, '&modified') == 1 and ' [+]' or ''
+
+    s = s .. ' ' .. filename .. modified .. ' '
+  end
+
+  s = s .. '%#TabLineFill#%T'
+  return s
+end

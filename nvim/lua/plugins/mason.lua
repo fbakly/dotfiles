@@ -1,4 +1,8 @@
 return {
-  "williamboman/mason.nvim",
-  opts = {}
+  "mason-org/mason.nvim",
+  dependencies = {
+    "neovim/nvim-lspconfig",
+    'saghen/blink.cmp',
+  },
+  opts={},
 }

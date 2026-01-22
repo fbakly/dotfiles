@@ -6,16 +6,16 @@ return {
     "antoinemadec/FixCursorHold.nvim",
     "nvim-treesitter/nvim-treesitter",
     "nvim-neotest/neotest-python",
-    "rcasia/neotest-java",
   },
-  opts = {
-    adapters = {
-
-      ["neotest-python"] = {
-        dap = { justMyCode = false },
-      },
-      ["neotest-java"] = {
+  config = function()
+    local neotest = require("neotest")
+    local neotest_python = require("neotest-python")
+    neotest.setup({
+      adapters = {
+        require("neotest-python")({
+          dap = { justMyCode = false }
+        })
       }
-    }
-  },
+    })
+  end
 }
