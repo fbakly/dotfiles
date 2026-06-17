@@ -8,6 +8,8 @@ return {
       "nvim-tree/nvim-web-devicons",
     },
     config = function()
+      vim.g.loaded_netrw = 1
+      vim.g.loaded_netrwPlugin = 1
       require("neo-tree").setup({
         filesystem = {
           filtered_items = {
@@ -22,8 +24,17 @@ return {
           follow_current_file = {
             enabled = true
           }
+        },
+        window = {
+          mappings = {
+            ["P"] = function(state)
+              local node = state.tree:get_node()
+              require("neo-tree.ui.renderer").focus_node(state, node:get_parent_id())
+            end,
+          }
         }
       })
+      vim.keymap.set("n", "<C-n>", ":Neotree toggle reveal left<cr>")
     end
   },
   {

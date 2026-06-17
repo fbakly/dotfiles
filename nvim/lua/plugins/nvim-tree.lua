@@ -1,18 +1,32 @@
-return {
-  "nvim-tree/nvim-tree.lua",
-  version = "*",
-  lazy = false,
-  dependencies = {
-    "nvim-tree/nvim-web-devicons",
-  },
-  opts = {
-    view = {
-      centralize_selection = true,
-      side = "left",
-      float = {
-        -- enable = true,
-        quit_on_focus_loss = true,
-      },
-    },
-  }
-}
+return {}
+-- return { {
+--   "nvim-tree/nvim-tree.lua",
+--   config = function()
+--     vim.g.loaded_netrw = 1
+--     vim.g.loaded_netrwPlugin = 1
+--     -- optionally enable 24-bit colour
+--     vim.opt.termguicolors = true
+--
+--     require("nvim-tree").setup()
+--
+--     vim.keymap.set('n', '<C-n>', function()
+--       require("nvim-tree.api").tree.toggle({
+--         path = "<args>",
+--         find_file = true,
+--         update_root = "<bang>",
+--         focus = true,
+--       })
+--     end)
+--   end
+-- },
+--   {
+--     "antosha417/nvim-lsp-file-operations",
+--     dependencies = {
+--       "nvim-lua/plenary.nvim",
+--       "nvim-tree/nvim-tree.lua",
+--     },
+--     config = function()
+--       require("lsp-file-operations").setup()
+--     end,
+--   },
+-- }

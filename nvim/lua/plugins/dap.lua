@@ -2,7 +2,7 @@ return {
   "mfussenegger/nvim-dap",
   dependencies = {
     "igorlfs/nvim-dap-view",
-    -- "rcarriga/nvim-dap-ui",
+    "rcarriga/nvim-dap-ui",
     "theHamsta/nvim-dap-virtual-text",
     "nvim-neotest/nvim-nio",
     "mason-org/mason.nvim",
@@ -11,14 +11,19 @@ return {
   },
   config = function()
     local dap = require "dap"
-    require('dap-python').setup('python')
+    require('dap-python').setup('debugpy-adapter')
     require("dap-python").test_runner = "pytest"
 
-    vim.keymap.set({ "n", "v" }, "<Leader>dt", function() require("dap-python").test_method() end)
+    -- vim.fn.sign_define('DapBreakpoint', { text = '🟥', texthl = '', linehl = '', numhl = '' })
+    -- vim.fn.sign_define('DapBreakpointRejected', { text = '🟦', texthl = '', linehl = '', numhl = '' })
+    -- vim.fn.sign_define('DapStopped', { text = '⭐️', texthl = '', linehl = '', numhl = '' })
 
-    vim.fn.sign_define('DapBreakpoint', { text = '🟥', texthl = '', linehl = '', numhl = '' })
-    vim.fn.sign_define('DapBreakpointRejected', { text = '🟦', texthl = '', linehl = '', numhl = '' })
-    vim.fn.sign_define('DapStopped', { text = '⭐️', texthl = '', linehl = '', numhl = '' })
+    vim.fn.sign_define("DapBreakpoint", { text = "🔴", })
+    vim.fn.sign_define("DapBreakpointCond", { text = "🟠", })
+    vim.fn.sign_define("DapBreakpointRej", { text = "⭕", })
+    vim.fn.sign_define("DapLogPoint", { text = "🔵", })
+    vim.fn.sign_define("DapStopped", { text = "🟡", linehl = "DapStoppedLine", })
+    vim.api.nvim_set_hl(0, "DapStoppedLine", { bg = "#2e2e2e" })
 
 
 
@@ -37,6 +42,7 @@ return {
 
         return " " .. variable.value
       end,
+      virt_text_pos = 'eol',
     }
 
     local persistent_breakpoints = require("persistent-breakpoints")
@@ -50,9 +56,15 @@ return {
     vim.keymap.set("n", "<space>bg", dap.run_to_cursor)
 
 
+    vim.keymap.set("n", "<leader>dc", function()
+      require('dap.ext.vscode').load_launchjs(nil, {})
+      require('fzf-lua').dap_configurations()
+    end
+    )
+
     vim.keymap.set('n', '<F5>', dap.continue)
-    vim.keymap.set('n', '<S-F5>', dap.terminate)
-    vim.keymap.set('n', '<C-S-F5>', dap.restart)
+    vim.keymap.set('n', '<F7>', dap.terminate)
+    vim.keymap.set('n', '<F8>', dap.restart)
     vim.keymap.set('n', '<F10>', dap.step_over)
     vim.keymap.set('n', '<F11>', dap.step_into)
     vim.keymap.set('n', '<F12>', dap.step_out)
@@ -89,9 +101,9 @@ return {
     -- vim.keymap.set("n", "<space>?", function()
     --   require("dapui").eval(nil, { enter = true })
     -- end)
-
+    --
     -- vim.keymap.set('n', '<leader>dt', ui.toggle)
-
+    --
     -- dap.listeners.before.attach.dapui_config = function()
     --   ui.open()
     -- end

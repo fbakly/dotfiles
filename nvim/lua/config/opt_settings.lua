@@ -1,9 +1,6 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-
 vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.tabstop = 4
@@ -13,7 +10,7 @@ vim.o.shiftwidth = 4
 vim.o.smartindent = true
 vim.o.nu = true
 vim.o.rnu = true
-vim.o.undodir = os.getenv("HOME") .. "/.config/nvim/UNDODIR"
+vim.o.undodir = os.getenv("HOME") .. "/.local/share/nvim/undodir"
 vim.o.undofile = true
 vim.o.incsearch = true
 vim.o.laststatus = 3
@@ -24,10 +21,9 @@ vim.o.clipboard = "unnamed,unnamedplus"
 vim.o.splitbelow = true
 vim.o.splitright = true
 vim.o.mouse = "a"
-vim.o.hidden = true
 vim.o.termguicolors = true
 vim.o.scrolloff = 3
-vim.o.completeopt = "menu,menuone,noselect"
+vim.o.completeopt = "menu,menuone,noselect,popup"
 vim.o.updatetime = 100
 vim.o.fileformats = "unix,dos"
 vim.o.wrap = false
@@ -38,6 +34,10 @@ vim.o.swapfile = false
 vim.o.backup = false
 vim.o.colorcolumn = "80,120"
 -- vim.o.formatoptions-=cro
+vim.wo.foldmethod = "expr"
+vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldlevel = 99
+vim.opt.foldlevelstart = 99
 
 vim.o.tabline = '%!v:lua.MyTabLine()'
 

@@ -12,8 +12,8 @@ return {
     local neotest_python = require("neotest-python")
     neotest.setup({
       adapters = {
-        require("neotest-python")({
-          dap = { justMyCode = false }
+        neotest_python({
+          dap = { justMyCode = false },
         })
       }
     })

@@ -5,7 +5,8 @@ return {
     require("toggleterm").setup({
       open_mapping = [[<C-M-\>]],
       shade_terminal = false,
-      direction = "float"
+      direction = "tab"
+      -- direction = "float"
     })
   end
 }
