@@ -17,7 +17,7 @@ local on_attach = function(client, bufnr)
   end, { noremap = true, silent = true, buffer = bufnr })
 
   -- Format on save
-  if client.supports_method("textDocument/formatting") then
+  if client:supports_method("textDocument/formatting") then
     local group = vim.api.nvim_create_augroup("LspFormatOnSave_" .. bufnr, { clear = true })
     vim.api.nvim_create_autocmd("BufWritePre", {
       buffer = bufnr,
@@ -33,11 +33,31 @@ end
 -- local servers = { "basedpyright", "ruff", "mypy", "rust_analyzer", "json-lsp", "yamlls", "lua_ls" }
 local servers = { "ty", "ruff", "rust_analyzer", "json-lsp", "yamlls", "lua_ls", "taplo", "dotenv-linter" }
 
+-- Load yaml schemas from a project-local file if present
+local schemas_file = vim.fn.getcwd() .. "/.yamlls.json"
+local schemas = {}
+if vim.fn.filereadable(schemas_file) == 1 then
+  local content = vim.fn.json_decode(vim.fn.readfile(schemas_file))
+  schemas = (content or {})["yaml.schemas"] or {}
+end
+
+-- Per-server settings
+local server_settings = {
+  yamlls = {
+    settings = {
+      yaml = {
+        schemas = schemas,
+      },
+    },
+  },
+}
+
 -- Apply the defaults to each
 for _, server in ipairs(servers) do
-  vim.lsp.config(server, {
+  local config = vim.tbl_deep_extend("force", {
     -- capabilities = capabilities, -- Not needed when using blink.cmp
     on_attach = on_attach,
-  })
+  }, server_settings[server] or {})
+  vim.lsp.config(server, config)
   vim.lsp.enable(server)
 end
