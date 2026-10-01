@@ -7,11 +7,60 @@
 --   build: called after an install or update
 --   priority: config order, higher first (default 50)
 --
--- Update with :packupdate. The lockfile is stdpath("config") .. "/nvim-pack-lock.json".
+-- Update with :packupdate. vim.pack writes stdpath("config") .. "/nvim-pack-lock.json".
+-- That path is read-only under home-manager, so it is a symlink to
+-- stdpath("data") .. "/nvim-pack-lock.json".
 
 if vim.pack == nil then
   error("vim.pack is unavailable; Neovim 0.12 or newer is required")
 end
+
+local function redirect_lockfile()
+  local config_lock = vim.fs.joinpath(vim.fn.stdpath("config"), "nvim-pack-lock.json")
+  local data_lock = vim.fs.joinpath(vim.fn.stdpath("data"), "nvim-pack-lock.json")
+  vim.fn.mkdir(vim.fn.stdpath("data"), "p")
+
+  -- vim.pack always opens the config path. Home-manager deploys that file as a
+  -- read-only symlink, so keep the real lockfile in stdpath("data")
+  -- (~/.local/share/nvim) and point the config path at it.
+  if not vim.uv.fs_stat(data_lock) and vim.uv.fs_stat(config_lock) then
+    local src = vim.uv.fs_stat(config_lock)
+    local fd = vim.uv.fs_open(config_lock, "r", 438)
+    if not fd then
+      error("failed to read the pack lockfile at " .. config_lock)
+    end
+    local contents = vim.uv.fs_read(fd, src.size) or ""
+    vim.uv.fs_close(fd)
+    local out = vim.uv.fs_open(data_lock, "w", 438)
+    if not out then
+      error("failed to create the pack lockfile at " .. data_lock)
+    end
+    vim.uv.fs_write(out, contents)
+    vim.uv.fs_close(out)
+  end
+
+  local existing = vim.uv.fs_stat(data_lock)
+  if existing and bit.band(existing.mode, tonumber("200", 8)) == 0 then
+    vim.uv.fs_chmod(data_lock, tonumber("644", 8))
+  end
+
+  local stat = vim.uv.fs_lstat(config_lock)
+  if stat and stat.type == "link" and vim.uv.fs_readlink(config_lock) == data_lock then
+    return
+  end
+  if stat then
+    local ok, err = vim.uv.fs_unlink(config_lock)
+    if not ok then
+      error(("failed to replace read-only pack lockfile %s: %s"):format(config_lock, err))
+    end
+  end
+  local ok, err = vim.uv.fs_symlink(data_lock, config_lock)
+  if not ok then
+    error(("failed to link the pack lockfile to %s: %s"):format(data_lock, err))
+  end
+end
+
+redirect_lockfile()
 
 local config_index = 0
 local plugins = {}
