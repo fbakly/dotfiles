@@ -1,5 +1,4 @@
 return {
-  "LintaoAmons/scratch.nvim",
-  dependencies = {"folke/snacks.nvim"},
-  event = "VeryLazy",
+  { src = "https://github.com/folke/snacks.nvim" },
+  { src = "https://github.com/LintaoAmons/scratch.nvim" },
 }

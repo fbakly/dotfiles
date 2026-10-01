@@ -1,7 +1,6 @@
 return {
-  "lukas-reineke/indent-blankline.nvim",
-  main = "ibl",
-  ---@module "ibl"
-  ---@type ibl.config
-  opts = {},
+  src = "https://github.com/lukas-reineke/indent-blankline.nvim",
+  config = function()
+    require("ibl").setup({})
+  end,
 }

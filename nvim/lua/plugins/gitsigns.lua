@@ -1,4 +1,6 @@
 return {
-  "lewis6991/gitsigns.nvim",
-  opts = {}
+  src = "https://github.com/lewis6991/gitsigns.nvim",
+  config = function()
+    require("gitsigns").setup({})
+  end,
 }

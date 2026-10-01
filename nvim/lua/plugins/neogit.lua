@@ -1,15 +1,11 @@
 return {
-  "NeogitOrg/neogit",
-  lazy = true,
-  dependencies = {
-    "nvim-lua/plenary.nvim",         -- required
-    "sindrets/diffview.nvim",        -- optional - Diff integration
-
-    -- Only one of these is needed.
-    "ibhagwan/fzf-lua",              -- optional
+  { src = "https://github.com/nvim-lua/plenary.nvim" },
+  { src = "https://github.com/sindrets/diffview.nvim" },
+  { src = "https://github.com/ibhagwan/fzf-lua" },
+  {
+    src = "https://github.com/NeogitOrg/neogit",
+    config = function()
+      vim.keymap.set("n", "<leader>gg", "<cmd>Neogit<cr>", { desc = "Show Neogit UI" })
+    end,
   },
-  cmd = "Neogit",
-  keys = {
-    { "<leader>gg", "<cmd>Neogit<cr>", desc = "Show Neogit UI" }
-  }
 }

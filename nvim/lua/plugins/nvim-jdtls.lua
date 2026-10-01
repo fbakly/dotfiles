@@ -1,1 +1,3 @@
-return { "mfussenegger/nvim-jdtls" }
+return {
+  src = "https://github.com/mfussenegger/nvim-jdtls",
+}

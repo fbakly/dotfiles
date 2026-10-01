@@ -1,1 +1,3 @@
-return { "mechatroner/rainbow_csv" }
+return {
+  src = "https://github.com/mechatroner/rainbow_csv",
+}

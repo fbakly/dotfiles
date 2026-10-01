@@ -1,8 +1,6 @@
 return {
-  "sotte/presenting.nvim",
-  opts = {
-    -- fill in your options here
-    -- see :help Presenting.config
-  },
-  cmd = { "Presenting" },
+  src = "https://github.com/sotte/presenting.nvim",
+  config = function()
+    require("presenting").setup({})
+  end,
 }

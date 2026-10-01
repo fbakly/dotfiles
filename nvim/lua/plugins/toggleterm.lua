@@ -1,12 +1,11 @@
 return {
-  'akinsho/toggleterm.nvim',
-  version = "*",
+  src = "https://github.com/akinsho/toggleterm.nvim",
+  version = vim.version.range("*"),
   config = function()
     require("toggleterm").setup({
       open_mapping = [[<C-M-\>]],
       shade_terminal = false,
-      direction = "tab"
-      -- direction = "float"
+      direction = "tab",
     })
-  end
+  end,
 }

@@ -1,4 +1,6 @@
 return {
-  "karb94/neoscroll.nvim",
-  opts = {},
+  src = "https://github.com/karb94/neoscroll.nvim",
+  config = function()
+    require("neoscroll").setup({})
+  end,
 }
