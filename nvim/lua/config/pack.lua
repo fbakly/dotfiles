@@ -132,7 +132,8 @@ end
 
 local plugin_dir = vim.fs.joinpath(vim.fn.stdpath("config"), "lua", "plugins")
 for filename, filetype in vim.fs.dir(plugin_dir) do
-  if filetype == "file" and filename:match("%.lua$") then
+  -- Home-manager deploys these modules as symlinks. vim.fs.dir() reports those as "link".
+  if (filetype == "file" or filetype == "link") and filename:match("%.lua$") then
     local mod = require("plugins." .. filename:gsub("%.lua$", ""))
     if type(mod) == "table" and type(mod.src) == "string" then
       add_spec(mod)
