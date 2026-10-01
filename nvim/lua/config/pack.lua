@@ -1,15 +1,10 @@
--- Install and configure plugins with vim.pack (Neovim 0.12+).
--- Specs live in lua/plugins/*.lua. A file returns one spec or a list of specs:
---   src: git clone URL
---   name: pack directory, when it should differ from the repository name
---   version: branch, tag, commit, or vim.version.range()
---   config: called once every plugin is on the runtimepath (higher priority first)
---   build: called after an install or update
---   priority: config order, higher first (default 50)
+-- One vim.pack.add() installs every plugin. Setup runs immediately after.
+-- Install hooks are registered first so they also run when bootstrapping
+-- from the lockfile.
 --
--- Update with :packupdate. vim.pack writes stdpath("config") .. "/nvim-pack-lock.json".
--- That path is read-only under home-manager, so it is a symlink to
--- stdpath("data") .. "/nvim-pack-lock.json".
+-- vim.pack writes stdpath("config") .. "/nvim-pack-lock.json". Home-manager
+-- deploys that path read-only, so it is a symlink to
+-- stdpath("data") .. "/nvim-pack-lock.json" (~/.local/share/nvim).
 
 if vim.pack == nil then
   error("vim.pack is unavailable; Neovim 0.12 or newer is required")
@@ -20,9 +15,6 @@ local function redirect_lockfile()
   local data_lock = vim.fs.joinpath(vim.fn.stdpath("data"), "nvim-pack-lock.json")
   vim.fn.mkdir(vim.fn.stdpath("data"), "p")
 
-  -- vim.pack always opens the config path. Home-manager deploys that file as a
-  -- read-only symlink, so keep the real lockfile in stdpath("data")
-  -- (~/.local/share/nvim) and point the config path at it.
   if not vim.uv.fs_stat(data_lock) and vim.uv.fs_stat(config_lock) then
     local src = vim.uv.fs_stat(config_lock)
     local fd = vim.uv.fs_open(config_lock, "r", 438)
@@ -62,135 +54,122 @@ end
 
 redirect_lockfile()
 
-local config_index = 0
-local plugins = {}
-local plugins_by_name = {}
-
-local function plugin_name(spec)
-  if type(spec.name) == "string" and spec.name ~= "" then
-    return spec.name
-  end
-  local src = spec.src:gsub("%.git$", "")
-  return assert(src:match("[^/]+$"), "cannot derive a plugin name from " .. spec.src)
-end
-
-local function versions_match(a, b)
-  if a == nil or b == nil or a == b then
-    return true
-  end
-  return tostring(a) == tostring(b)
-end
-
-local function add_spec(spec)
-  if type(spec) ~= "table" or type(spec.src) ~= "string" then
-    return
-  end
-
-  local name = plugin_name(spec)
-  local existing = plugins_by_name[name]
-  if existing == nil then
-    existing = {
-      src = spec.src,
-      name = name,
-      version = spec.version,
-      build = spec.build,
-      configs = {},
-    }
-    plugins_by_name[name] = existing
-    plugins[#plugins + 1] = existing
-  else
-    if existing.src ~= spec.src then
-      error(("conflicting sources for %s:\n%s\n%s"):format(name, existing.src, spec.src))
-    end
-    if not versions_match(existing.version, spec.version) then
-      error(("conflicting versions for %s:\n%s\n%s"):format(
-        name,
-        tostring(existing.version),
-        tostring(spec.version)
-      ))
-    end
-    if existing.version == nil then
-      existing.version = spec.version
-    end
-    if spec.build ~= nil then
-      if existing.build ~= nil then
-        error("multiple build hooks for " .. name)
-      end
-      existing.build = spec.build
-    end
-  end
-
-  if spec.config ~= nil then
-    config_index = config_index + 1
-    existing.configs[#existing.configs + 1] = {
-      fn = spec.config,
-      priority = spec.priority or 50,
-      index = config_index,
-    }
-  end
-end
-
-local plugin_dir = vim.fs.joinpath(vim.fn.stdpath("config"), "lua", "plugins")
-for filename, filetype in vim.fs.dir(plugin_dir) do
-  -- Home-manager deploys these modules as symlinks. vim.fs.dir() reports those as "link".
-  if (filetype == "file" or filetype == "link") and filename:match("%.lua$") then
-    local mod = require("plugins." .. filename:gsub("%.lua$", ""))
-    if type(mod) == "table" and type(mod.src) == "string" then
-      add_spec(mod)
-    elseif type(mod) == "table" then
-      for _, spec in ipairs(mod) do
-        add_spec(spec)
-      end
-    end
-  end
-end
-
-local builds = {}
-for _, plugin in ipairs(plugins) do
-  if plugin.build ~= nil then
-    builds[plugin.name] = plugin.build
-  end
-end
-
 vim.api.nvim_create_autocmd("PackChanged", {
   callback = function(ev)
-    local build = builds[ev.data.spec.name]
-    if build == nil or (ev.data.kind ~= "install" and ev.data.kind ~= "update") then
+    local name, kind = ev.data.spec.name, ev.data.kind
+    if kind ~= "install" and kind ~= "update" then
       return
     end
-    if not ev.data.active then
-      vim.cmd.packadd(ev.data.spec.name)
-    end
-    local ok, err = pcall(build, ev.data.path)
-    if not ok then
-      vim.notify(("plugin build failed for %s:\n%s"):format(ev.data.spec.name, err), vim.log.levels.ERROR)
+
+    if name == "nvim-treesitter" then
+      if not ev.data.active then
+        vim.cmd.packadd("nvim-treesitter")
+      end
+      vim.cmd("TSUpdate")
+    elseif name == "CopilotChat.nvim" then
+      if vim.fn.executable("make") == 0 then
+        vim.notify("CopilotChat: skipped `make tiktoken` because `make` is not installed", vim.log.levels.WARN)
+        return
+      end
+      local result = vim.system({ "make", "tiktoken" }, { cwd = ev.data.path }):wait()
+      if result.code ~= 0 then
+        local output = result.stderr ~= "" and result.stderr or result.stdout
+        vim.notify("CopilotChat: make tiktoken failed\n" .. output, vim.log.levels.ERROR)
+      end
     end
   end,
 })
 
-local specs = {}
-for _, plugin in ipairs(plugins) do
-  local spec = { src = plugin.src, name = plugin.name }
-  if plugin.version ~= nil then
-    spec.version = plugin.version
-  end
-  specs[#specs + 1] = spec
-end
+vim.pack.add({
+  { src = "https://github.com/nvim-lua/plenary.nvim", version = "master" },
+  "https://github.com/nvim-tree/nvim-web-devicons",
+  "https://github.com/MunifTanjim/nui.nvim",
+  "https://github.com/nvim-neotest/nvim-nio",
+  "https://github.com/lewis6991/async.nvim",
+  "https://github.com/rafamadriz/friendly-snippets",
+  "https://github.com/antoinemadec/FixCursorHold.nvim",
 
-vim.pack.add(specs, { confirm = false })
+  "https://github.com/Shatur/neovim-ayu",
+  { src = "https://github.com/projekt0n/github-nvim-theme", name = "github-theme" },
+  { src = "https://github.com/catppuccin/nvim", name = "catppuccin" },
 
-local configs = {}
-for _, plugin in ipairs(plugins) do
-  for _, config in ipairs(plugin.configs) do
-    configs[#configs + 1] = config
-  end
-end
-table.sort(configs, function(a, b)
-  if a.priority ~= b.priority then
-    return a.priority > b.priority
-  end
-  return a.index < b.index
-end)
-for _, config in ipairs(configs) do
-  config.fn()
-end
+  { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
+  { src = "https://github.com/saghen/blink.cmp", version = vim.version.range("^1.0.0") },
+  "https://github.com/neovim/nvim-lspconfig",
+  "https://github.com/mason-org/mason.nvim",
+
+  { src = "https://github.com/akinsho/bufferline.nvim", version = vim.version.range("*") },
+  "https://github.com/nvim-lualine/lualine.nvim",
+  "https://github.com/ibhagwan/fzf-lua",
+  { src = "https://github.com/s1n7ax/nvim-window-picker", version = vim.version.range("^2.0.0") },
+  { src = "https://github.com/nvim-neo-tree/neo-tree.nvim", version = "v3.x" },
+  "https://github.com/antosha417/nvim-lsp-file-operations",
+
+  "https://github.com/lewis6991/gitsigns.nvim",
+  "https://github.com/tpope/vim-fugitive",
+  "https://github.com/sindrets/diffview.nvim",
+  "https://github.com/NeogitOrg/neogit",
+  "https://github.com/folke/which-key.nvim",
+  "https://github.com/folke/trouble.nvim",
+  "https://github.com/folke/todo-comments.nvim",
+  "https://github.com/folke/snacks.nvim",
+  "https://github.com/LintaoAmons/scratch.nvim",
+
+  { src = "https://github.com/akinsho/toggleterm.nvim", version = vim.version.range("*") },
+  { src = "https://github.com/kylechui/nvim-surround", version = vim.version.range("*") },
+  { src = "https://github.com/smoka7/hop.nvim", version = vim.version.range("*") },
+  "https://github.com/windwp/nvim-autopairs",
+  "https://github.com/lukas-reineke/indent-blankline.nvim",
+  "https://github.com/karb94/neoscroll.nvim",
+  "https://github.com/sotte/presenting.nvim",
+  "https://github.com/mechatroner/rainbow_csv",
+  "https://github.com/mfussenegger/nvim-jdtls",
+  "https://github.com/ThePrimeagen/refactoring.nvim",
+  "https://github.com/MeanderingProgrammer/render-markdown.nvim",
+  "https://github.com/nvim-mini/mini.nvim",
+  "https://github.com/rachartier/tiny-code-action.nvim",
+  "https://github.com/rachartier/tiny-inline-diagnostic.nvim",
+  "https://github.com/github/copilot.vim",
+  "https://github.com/CopilotC-Nvim/CopilotChat.nvim",
+
+  "https://github.com/mfussenegger/nvim-dap",
+  "https://github.com/mfussenegger/nvim-dap-python",
+  "https://github.com/rcarriga/nvim-dap-ui",
+  "https://github.com/igorlfs/nvim-dap-view",
+  "https://github.com/theHamsta/nvim-dap-virtual-text",
+  "https://github.com/Weissle/persistent-breakpoints.nvim",
+  "https://github.com/jay-babu/mason-nvim-dap.nvim",
+  "https://github.com/nvim-neotest/neotest",
+  "https://github.com/nvim-neotest/neotest-python",
+}, { confirm = false })
+
+require("plugins.colorschemes")
+require("plugins.treesitter")
+require("plugins.blink-cmp")
+require("plugins.mason")
+require("plugins.fzf-lua")
+require("plugins.neotree")
+require("plugins.persistent-breakpoints")
+require("plugins.dap")
+require("plugins.mason-nvim-dap")
+require("plugins.bufferline")
+require("plugins.lualine")
+require("plugins.gitsigns")
+require("plugins.vim-fugitive")
+require("plugins.neogit")
+require("plugins.whichkey")
+require("plugins.trouble")
+require("plugins.todo-comments")
+require("plugins.toggleterm")
+require("plugins.nvim-surround")
+require("plugins.hop")
+require("plugins.nvim-autopairs")
+require("plugins.ident-blankline")
+require("plugins.neoscroll")
+require("plugins.presenting")
+require("plugins.refactoring")
+require("plugins.render-markdown")
+require("plugins.tiny-code-actions")
+require("plugins.tiny_inline_diagnotic")
+require("plugins.copilot-chat")
+require("plugins.neotest")
